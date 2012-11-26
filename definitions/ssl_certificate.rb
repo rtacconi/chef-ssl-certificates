@@ -21,6 +21,12 @@ define :ssl_certificate do
   name = params[:name] =~ /\*\.(.+)/ ? "#{$1}_wildcard" : params[:name]
   Chef::Log.info "Looking for SSL certificate #{name.inspect}"
   cert = search(:certificates, "name:#{name}").first
+
+  directory node[:ssl_certificates][:path] do
+    owner 'root'
+    group 'ssl-cert'
+    mode '0640'
+  end
   
   if cert[:crt]
     template "#{node[:ssl_certificates][:path]}/#{name}.crt" do
