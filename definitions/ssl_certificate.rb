@@ -28,36 +28,36 @@ define :ssl_certificate do
     mode '0640'
   end
   
-  if cert[:crt]
+  if cert['crt']
     template "#{node[:ssl_certificates][:path]}/#{name}.crt" do
       source 'cert.erb'
       owner 'root'
       group 'ssl-cert'
       mode '0640'
       cookbook 'ssl_certificates'
-      variables :cert => cert[:crt]
+      variables :cert => cert['crt']
     end
   end
 
-  if cert[:key]
+  if cert['key']
     template "#{node[:ssl_certificates][:path]}/#{name}.key" do
       source 'cert.erb'
       owner 'root'
       group 'ssl-cert'
       mode '0640'
       cookbook 'ssl_certificates'
-      variables :cert => cert[:key]
+      variables :cert => cert['key']
     end
   end
 
-  if cert[:pem]
+  if cert['pem']
     template "#{node[:ssl_certificates][:path]}/#{name}.pem" do
       source 'cert.erb'
       owner 'root'
       group 'ssl-cert'
       mode '0640'
       cookbook 'ssl_certificates'
-      variables :cert => cert[:pem]
+      variables :cert => cert['pem']
     end
   end
 end
