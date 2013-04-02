@@ -27,15 +27,32 @@ define :ssl_certificate do
     group 'ssl-cert'
     mode '0640'
   end
-  
+
   if cert['crt']
+    certfile_content = cert['crt']
+
+    if cert['ca_bundle'] && params[:ca_bundle_combined]
+        certfile_content += cert['ca_bundle']
+    end
+
     template "#{node[:ssl_certificates][:path]}/#{name}.crt" do
       source 'cert.erb'
       owner 'root'
       group 'ssl-cert'
       mode '0640'
       cookbook 'ssl_certificates'
-      variables :cert => cert['crt']
+      variables :cert => certfile_content
+    end
+  end
+
+  if cert['ca_bundle'] && ! params[:ca_bundle_combined]
+    template "#{node[:ssl_certificates][:path]}/#{name}.ca-bundle" do
+      source 'cert.erb'
+      owner 'root'
+      group 'ssl-cert'
+      mode '0640'
+      cookbook 'ssl_certificates'
+      variables :cert => cert['ca_bundle']
     end
   end
 
@@ -58,17 +75,6 @@ define :ssl_certificate do
       mode '0640'
       cookbook 'ssl_certificates'
       variables :cert => cert['pem']
-    end
-  end
-
-  if cert['ca_bundle']
-    template "#{node[:ssl_certificates][:path]}/#{name}.ca-bundle" do
-      source 'cert.erb'
-      owner 'root'
-      group 'ssl-cert'
-      mode '0640'
-      cookbook 'ssl_certificates'
-      variables :cert => cert['ca_bundle']
     end
   end
 end
