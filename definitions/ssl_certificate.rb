@@ -60,4 +60,15 @@ define :ssl_certificate do
       variables :cert => cert['pem']
     end
   end
+
+  if cert['ca_bundle']
+    template "#{node[:ssl_certificates][:path]}/#{name}.ca-bundle" do
+      source 'cert.erb'
+      owner 'root'
+      group 'ssl-cert'
+      mode '0640'
+      cookbook 'ssl_certificates'
+      variables :cert => cert['ca_bundle']
+    end
+  end
 end
