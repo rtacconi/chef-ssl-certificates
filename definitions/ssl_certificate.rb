@@ -32,49 +32,42 @@ define :ssl_certificate do
     certfile_content = cert['crt']
 
     if cert['ca_bundle'] && params[:ca_bundle_combined]
-        certfile_content += cert['ca_bundle']
+        certfile_content += "\n" + cert['ca_bundle']
     end
 
-    template "#{node[:ssl_certificates][:path]}/#{name}.crt" do
-      source 'cert.erb'
+    file "#{node[:ssl_certificates][:path]}/#{name}.crt" do
+      content certfile_content
       owner 'root'
       group 'ssl-cert'
       mode '0640'
-      cookbook 'ssl_certificates'
-      variables :cert => certfile_content
     end
   end
 
   if cert['ca_bundle'] && ! params[:ca_bundle_combined]
-    template "#{node[:ssl_certificates][:path]}/#{name}.ca-bundle" do
-      source 'cert.erb'
+    file "#{node[:ssl_certificates][:path]}/#{name}.ca-bundle" do
+      content cert['ca_bundle']
       owner 'root'
       group 'ssl-cert'
       mode '0640'
-      cookbook 'ssl_certificates'
-      variables :cert => cert['ca_bundle']
     end
   end
 
   if cert['key']
-    template "#{node[:ssl_certificates][:path]}/#{name}.key" do
-      source 'cert.erb'
+    file "#{node[:ssl_certificates][:path]}/#{name}.key" do
+      content cert['key']
       owner 'root'
       group 'ssl-cert'
       mode '0640'
-      cookbook 'ssl_certificates'
-      variables :cert => cert['key']
+
     end
   end
 
   if cert['pem']
-    template "#{node[:ssl_certificates][:path]}/#{name}.pem" do
-      source 'cert.erb'
+    file "#{node[:ssl_certificates][:path]}/#{name}.pem" do
+      content cert['pem']
       owner 'root'
       group 'ssl-cert'
       mode '0640'
-      cookbook 'ssl_certificates'
-      variables :cert => cert['pem']
     end
   end
 end
