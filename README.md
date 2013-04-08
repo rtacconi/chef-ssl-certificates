@@ -15,9 +15,11 @@ SSL certificates are defined in the "certificates" cookbook.
 ````javascript
 {
   "id": "my_ssl_cert",
-  "name": "ssl.myapp.com",
+  "name": "ssl.example.com",
   "key": "[raw SSL key]",
-  "pem": "[raw SSL pem]"
+  "crt": "[raw SSL crt]",
+  "pem": "[raw SSL pem]",
+  "ca_bundle": "[raw SSL ca-bundle]"
 }
 ````
 
@@ -25,5 +27,12 @@ To install a SSL certificate on a node, use the SSL certificate definition in
 your recipe, like this:
 
 ````
-ssl_certificate 'ssl.myapp.com'
+ssl_certificate 'ssl.example.com'
+````
+To create a certificate file combined of the `crt` and the `ca-bundle` (e.g. for nginx), set the attribute `ca_bundle_combined`:
+
+````
+ssl_certificate `ssl.example.com` do
+  ca_bundle_combined true
+end
 ````
